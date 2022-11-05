@@ -1,7 +1,6 @@
 package observe_test
 
 import (
-	"context"
 	"errors"
 	"github.com/audrenbdb/observe"
 	"github.com/google/go-cmp/cmp"
@@ -9,11 +8,10 @@ import (
 )
 
 func TestObservable(t *testing.T) {
-	ctx := context.Background()
 	numbers := make([]int, 0)
 	done := false
 
-	observable := observe.NewObservable[int](ctx, func(subscriber observe.Subscriber[int]) error {
+	observable := observe.NewObservable[int](func(subscriber observe.Subscriber[int]) error {
 		subscriber.Next(1)
 		subscriber.Next(2)
 		subscriber.Next(3)
@@ -22,7 +20,7 @@ func TestObservable(t *testing.T) {
 		return nil
 	})
 
-	observable.Subscribe(ctx, observe.Subscription[int]{
+	observable.Subscribe(observe.Subscription[int]{
 		Next: func(n int) {
 			numbers = append(numbers, n)
 		},
@@ -41,14 +39,13 @@ func TestObservable(t *testing.T) {
 }
 
 func TestObservableError(t *testing.T) {
-	ctx := context.Background()
 	errMsg := ""
 
-	observable := observe.NewObservable[int](ctx, func(subscriber observe.Subscriber[int]) error {
+	observable := observe.NewObservable[int](func(subscriber observe.Subscriber[int]) error {
 		return errors.New("fatal crash")
 	})
 
-	observable.Subscribe(ctx, observe.Subscription[int]{
+	observable.Subscribe(observe.Subscription[int]{
 		Error: func(err error) {
 			errMsg = err.Error()
 		},

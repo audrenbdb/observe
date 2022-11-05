@@ -1,8 +1,6 @@
 Provides an observable that can be subscribed to.
 # Usage
 
-Given observe should write numbers to subscriber:
-
 ```go
     ctx := context.Background()
 
@@ -25,26 +23,3 @@ Given observe should write numbers to subscriber:
     // Received number: 2
     // Received number: 3
 ```
-
-# Options
-
-Listened events with OnEmit can be filtered with a boolean match.
-
-Only matching events will be emitted.
-
-I.E: 
-```go
-  match := func(n int) bool { return n > 5 }
-  emitter.OnEmit(ctx, func(n int) {
-    fmt.Printf("Received number: %d\n", n)
-  })
-
-  for _, n := range []int{1, 5, 8, 10} {
-    emitter.Emit(n)
-  }
-  // output:
-  // Received number: 8
-  // Received number: 10
-```
-
-
